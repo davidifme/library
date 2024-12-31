@@ -11,8 +11,14 @@ function addBookToLibrary(title, author, pages) {
     myLibrary.push(book);
 }
 
+function removeBookFromLibrary(index) {
+    myLibrary.splice(index, 1);
+}
+
 function showBooks() {
-    for (const book of myLibrary) {
+    bookList.innerHTML = '';
+
+    myLibrary.forEach((book, index) => {
         const bookContainer = document.createElement("div");
         bookContainer.classList.add('book');
 
@@ -31,8 +37,22 @@ function showBooks() {
         unorderedList.appendChild(pagesItem);
 
         bookContainer.appendChild(unorderedList);
+
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.classList.add('book-buttons');
+
+        const removeBookButton = document.createElement('button');
+        removeBookButton.textContent = 'Remove';
+        removeBookButton.addEventListener('click', () => {
+            removeBookFromLibrary(index);
+            bookList.removeChild(bookContainer);
+        });
+
+        buttonsContainer.appendChild(removeBookButton);
+
+        bookContainer.appendChild(buttonsContainer);
         bookList.appendChild(bookContainer);
-    }
+    });
 }
 
 const bookList = document.querySelector('.book-list');
