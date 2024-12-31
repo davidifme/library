@@ -48,7 +48,14 @@ function showBooks() {
             bookList.removeChild(bookContainer);
         });
 
+        const readStatusButton = document.createElement('button');
+        readStatusButton.textContent = 'Read Status';
+        readStatusButton.addEventListener('click', () => {
+
+        });
+
         buttonsContainer.appendChild(removeBookButton);
+        buttonsContainer.appendChild(readStatusButton);
 
         bookContainer.appendChild(buttonsContainer);
         bookList.appendChild(bookContainer);

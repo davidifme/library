@@ -25,6 +25,8 @@ h1 {
     padding: 1rem;
     min-width: 500px;
     min-height: 800px;
+
+    overflow: auto;
 }
 
 .buttons {
@@ -44,7 +46,7 @@ h1 {
 
     display: grid;
     grid-auto-flow: column;
-    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-columns: 1fr 1.5fr 2fr;
 
     align-items: center;
 }
@@ -52,6 +54,12 @@ h1 {
 .book h2 {
     padding: 0;
     margin: 0;
+}
+
+.book-buttons {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 10px;
 }
 
 /* Button styling */
