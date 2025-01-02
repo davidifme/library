@@ -4,6 +4,10 @@ function Book(title, author, pages) {
     this.title = title;
     this.author = author;
     this.pages = pages;
+    this.readStatus = false;
+    this.isRead = function() {
+        return !this.readStatus ? 'unread' : 'read'
+    };
 }
 
 function addBookToLibrary(title, author, pages) {
@@ -27,6 +31,7 @@ function createBookElement(book, index) {
     unorderedList.innerHTML = `
         <li>Author: ${book.author}</li>
         <li>Pages: ${book.pages}</li>
+        <li>Read Status: ${book.isRead()}</li>
     `;
     bookContainer.appendChild(unorderedList);
 
@@ -42,7 +47,15 @@ function createBookElement(book, index) {
 
     const readStatusButton = document.createElement('button');
     readStatusButton.textContent = 'Read Status';
-    // Możesz dodać logikę do przycisku Read Status
+    readStatusButton.addEventListener('click', () => {
+        if (!book.readStatus) {
+            book.readStatus = true;
+        } else {
+            book.readStatus = false;
+        }
+        const readStatusItem = unorderedList.children[2];
+        readStatusItem.textContent = `Read Status: ${book.isRead()}`;
+    });
 
     buttonsContainer.appendChild(removeBookButton);
     buttonsContainer.appendChild(readStatusButton);
