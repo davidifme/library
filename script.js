@@ -15,55 +15,52 @@ function removeBookFromLibrary(index) {
     myLibrary.splice(index, 1);
 }
 
+function createBookElement(book, index) {
+    const bookContainer = document.createElement("div");
+    bookContainer.classList.add('book');
+
+    const bookTitle = document.createElement('h2');
+    bookTitle.textContent = book.title;
+    bookContainer.appendChild(bookTitle);
+
+    const unorderedList = document.createElement('ul');
+    unorderedList.innerHTML = `
+        <li>Author: ${book.author}</li>
+        <li>Pages: ${book.pages}</li>
+    `;
+    bookContainer.appendChild(unorderedList);
+
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.classList.add('book-buttons');
+
+    const removeBookButton = document.createElement('button');
+    removeBookButton.textContent = 'Remove';
+    removeBookButton.addEventListener('click', () => {
+        removeBookFromLibrary(index);
+        bookList.removeChild(bookContainer);
+    });
+
+    const readStatusButton = document.createElement('button');
+    readStatusButton.textContent = 'Read Status';
+    // Możesz dodać logikę do przycisku Read Status
+
+    buttonsContainer.appendChild(removeBookButton);
+    buttonsContainer.appendChild(readStatusButton);
+
+    bookContainer.appendChild(buttonsContainer);
+    return bookContainer;
+}
+
 function showBooks() {
     bookList.innerHTML = '';
-
+    
     myLibrary.forEach((book, index) => {
-        const bookContainer = document.createElement("div");
-        bookContainer.classList.add('book');
-
-        const bookTitle = document.createElement('h2');
-        bookTitle.textContent = book.title;
-        bookContainer.appendChild(bookTitle);
-
-        const unorderedList = document.createElement('ul');
-        
-        const authorItem = document.createElement('li');
-        authorItem.textContent = `Author: ${book.author}`;
-        unorderedList.appendChild(authorItem);
-
-        const pagesItem = document.createElement('li');
-        pagesItem.textContent = `Pages: ${book.pages}`;
-        unorderedList.appendChild(pagesItem);
-
-        bookContainer.appendChild(unorderedList);
-
-        const buttonsContainer = document.createElement('div');
-        buttonsContainer.classList.add('book-buttons');
-
-        const removeBookButton = document.createElement('button');
-        removeBookButton.textContent = 'Remove';
-        removeBookButton.addEventListener('click', () => {
-            removeBookFromLibrary(index);
-            bookList.removeChild(bookContainer);
-        });
-
-        const readStatusButton = document.createElement('button');
-        readStatusButton.textContent = 'Read Status';
-        readStatusButton.addEventListener('click', () => {
-
-        });
-
-        buttonsContainer.appendChild(removeBookButton);
-        buttonsContainer.appendChild(readStatusButton);
-
-        bookContainer.appendChild(buttonsContainer);
-        bookList.appendChild(bookContainer);
+        const bookElement = createBookElement(book, index);
+        bookList.appendChild(bookElement);
     });
 }
 
 const bookList = document.querySelector('.book-list');
-const showBooksButton = document.querySelector('.show-books');
 
 const showDialogButton = document.querySelector('#show-dialog');
 const dialog = document.querySelector('#create-new-book');
@@ -74,8 +71,6 @@ const dialogForm = document.getElementById('dialog-form')
 const bookTitleInput = document.getElementById('book-title');
 const bookAuthorInput = document.getElementById('book-author');
 const bookPagesInput = document.getElementById('book-pages');
-
-showBooksButton.addEventListener('click', showBooks);
 
 showDialogButton.addEventListener('click', () => {
     dialog.showModal();
