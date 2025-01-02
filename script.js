@@ -65,8 +65,33 @@ function showBooks() {
 const bookList = document.querySelector('.book-list');
 const showBooksButton = document.querySelector('.show-books');
 
+const showDialogButton = document.querySelector('#show-dialog');
+const dialog = document.querySelector('#create-new-book');
+const closeDialogButton = document.querySelector('#close-button');
+const dialogForm = document.getElementById('dialog-form')
+
+// Dialog inputs
+const bookTitleInput = document.getElementById('book-title');
+const bookAuthorInput = document.getElementById('book-author');
+const bookPagesInput = document.getElementById('book-pages');
+
 showBooksButton.addEventListener('click', showBooks);
 
-addBookToLibrary('Title 1', 'Author 1', 261);
-addBookToLibrary('Title 2', 'Author 2', 262);
-addBookToLibrary('Title 3', 'Author 3', 263);
+showDialogButton.addEventListener('click', () => {
+    dialog.showModal();
+});
+
+closeDialogButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    dialog.close();
+});
+
+dialogForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (dialogForm.checkValidity()) {
+        addBookToLibrary(bookTitleInput.value, bookAuthorInput.value, bookPagesInput.value);
+        showBooks();
+        dialogForm.reset();
+        dialog.close();
+    }
+});

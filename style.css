@@ -86,3 +86,15 @@ button:active {
     background-color: #00407A;
     transform: translateY(0);
 }
+
+/* Dialog */
+dialog#create-new-book {
+    padding: 20px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    border: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
