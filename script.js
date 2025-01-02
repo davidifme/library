@@ -43,6 +43,7 @@ function createBookElement(book, index) {
     removeBookButton.addEventListener('click', () => {
         removeBookFromLibrary(index);
         bookList.removeChild(bookContainer);
+        showBooks();
     });
 
     const readStatusButton = document.createElement('button');
