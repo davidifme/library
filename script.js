@@ -1,106 +1,109 @@
-const myLibrary = [];
-
-function Book(title, author, pages) {
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.readStatus = false;
-    this.isRead = function() {
-        return !this.readStatus ? 'unread' : 'read'
-    };
-}
-
-function addBookToLibrary(title, author, pages) {
-    let book = new Book(title, author, pages);
-    myLibrary.push(book);
-}
-
-function removeBookFromLibrary(index) {
-    myLibrary.splice(index, 1);
-}
-
-function createBookElement(book, index) {
-    const bookContainer = document.createElement("div");
-    bookContainer.classList.add('book');
-
-    const bookTitle = document.createElement('h2');
-    bookTitle.textContent = book.title;
-    bookContainer.appendChild(bookTitle);
-
-    const unorderedList = document.createElement('ul');
-    unorderedList.innerHTML = `
-        <li>Author: ${book.author}</li>
-        <li>Pages: ${book.pages}</li>
-        <li>Read Status: ${book.isRead()}</li>
-    `;
-    bookContainer.appendChild(unorderedList);
-
-    const buttonsContainer = document.createElement('div');
-    buttonsContainer.classList.add('book-buttons');
-
-    const removeBookButton = document.createElement('button');
-    removeBookButton.textContent = 'Remove';
-    removeBookButton.addEventListener('click', () => {
-        removeBookFromLibrary(index);
-        bookList.removeChild(bookContainer);
-        showBooks();
-    });
-
-    const readStatusButton = document.createElement('button');
-    readStatusButton.textContent = 'Read Status';
-    readStatusButton.addEventListener('click', () => {
-        if (!book.readStatus) {
-            book.readStatus = true;
-        } else {
-            book.readStatus = false;
-        }
-        const readStatusItem = unorderedList.children[2];
-        readStatusItem.textContent = `Read Status: ${book.isRead()}`;
-    });
-
-    buttonsContainer.appendChild(removeBookButton);
-    buttonsContainer.appendChild(readStatusButton);
-
-    bookContainer.appendChild(buttonsContainer);
-    return bookContainer;
-}
-
-function showBooks() {
-    bookList.innerHTML = '';
-    
-    myLibrary.forEach((book, index) => {
-        const bookElement = createBookElement(book, index);
-        bookList.appendChild(bookElement);
-    });
-}
-
-const bookList = document.querySelector('.book-list');
-
-const showDialogButton = document.querySelector('#show-dialog');
-const dialog = document.querySelector('#create-new-book');
-const closeDialogButton = document.querySelector('#close-button');
-const dialogForm = document.getElementById('dialog-form')
-
-// Dialog inputs
-const bookTitleInput = document.getElementById('book-title');
-const bookAuthorInput = document.getElementById('book-author');
-const bookPagesInput = document.getElementById('book-pages');
-
-showDialogButton.addEventListener('click', () => {
-    dialog.showModal();
-});
-
-closeDialogButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    dialog.close();
-});
-
-dialogForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    if (dialogForm.checkValidity()) {
-        addBookToLibrary(bookTitleInput.value, bookAuthorInput.value, bookPagesInput.value);
-        showBooks();
-        dialogForm.reset();
-        dialog.close();
+class Book {
+    constructor(title, author, pages) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.readStatus = false;
     }
-});
+
+    isRead() {
+        return this.readStatus ? 'read' : 'unread';
+    }
+}
+
+class Library {
+    constructor() {
+        this.books = [];
+        this.bookList = document.querySelector('.book-list');
+
+        // Dialog elements
+        this.showDialogButton = document.querySelector('#show-dialog');
+        this.dialog = document.querySelector('#create-new-book');
+        this.closeDialogButton = document.querySelector('#close-button');
+        this.dialogForm = document.getElementById('dialog-form');
+        this.bookTitleInput = document.getElementById('book-title');
+        this.bookAuthorInput = document.getElementById('book-author');
+        this.bookPagesInput = document.getElementById('book-pages');
+
+        // Event listeners
+        this.showDialogButton.addEventListener('click', () => this.dialog.showModal());
+        this.closeDialogButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.dialog.close();
+        });
+        this.dialogForm.addEventListener('submit', (e) => this.handleFormSubmit(e));
+    }
+
+    addBook(title, author, pages) {
+        const book = new Book(title, author, pages);
+        this.books.push(book);
+        this.showBooks();
+    }
+
+    removeBook(index) {
+        this.books.splice(index, 1);
+        this.showBooks();
+    }
+
+    showBooks() {
+        this.bookList.innerHTML = '';
+        this.books.forEach((book, index) => {
+            const bookElement = this.#createBookElement(book, index);
+            this.bookList.appendChild(bookElement);
+        });
+    }
+
+    #createBookElement(book, index) {
+        const bookContainer = document.createElement("div");
+        bookContainer.classList.add('book');
+
+        const bookTitle = document.createElement('h2');
+        bookTitle.textContent = book.title;
+        bookContainer.appendChild(bookTitle);
+
+        const unorderedList = document.createElement('ul');
+        unorderedList.innerHTML = `
+            <li>Author: ${book.author}</li>
+            <li>Pages: ${book.pages}</li>
+            <li>Read Status: ${book.isRead()}</li>
+        `;
+        bookContainer.appendChild(unorderedList);
+
+        const buttonsContainer = document.createElement('div');
+        buttonsContainer.classList.add('book-buttons');
+
+        const removeBookButton = document.createElement('button');
+        removeBookButton.textContent = 'Remove';
+        removeBookButton.addEventListener('click', () => {
+            this.removeBook(index);
+        });
+
+        const readStatusButton = document.createElement('button');
+        readStatusButton.textContent = 'Read Status';
+        readStatusButton.addEventListener('click', () => {
+            book.readStatus = !book.readStatus;
+            unorderedList.children[2].textContent = `Read Status: ${book.isRead()}`;
+        });
+
+        buttonsContainer.appendChild(removeBookButton);
+        buttonsContainer.appendChild(readStatusButton);
+
+        bookContainer.appendChild(buttonsContainer);
+        return bookContainer;
+    }
+
+    handleFormSubmit(event) {
+        event.preventDefault();
+        if (this.dialogForm.checkValidity()) {
+            const title = this.bookTitleInput.value;
+            const author = this.bookAuthorInput.value;
+            const pages = this.bookPagesInput.value;
+            this.addBook(title, author, pages);
+            this.dialogForm.reset();
+            this.dialog.close();
+        }
+    }
+}
+
+// Inicjalizacja biblioteki
+const myLibrary = new Library();
