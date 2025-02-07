@@ -94,7 +94,28 @@ class Library {
 
     handleFormSubmit(event) {
         event.preventDefault();
-        if (this.dialogForm.checkValidity()) {
+
+        if (!this.dialogForm.checkValidity()) {
+            if (this.bookTitleInput.validity.tooShort) {
+                this.bookTitleInput.setCustomValidity('Book title has to be minimum 3 characters long.');
+            } else {
+                this.bookTitleInput.setCustomValidity('');
+            }
+
+            if (this.bookAuthorInput.validity.tooShort) {
+                this.bookAuthorInput.setCustomValidity('Author name has to be minimum 3 characters long.');
+            } else {
+                this.bookAuthorInput.setCustomValidity('');
+            }
+
+            if (this.bookPagesInput.validity.rangeUnderflow) {
+                this.bookPagesInput.setCustomValidity('Minimum pages number is 1.');
+            } else {
+                this.bookPagesInput.setCustomValidity('');
+            }
+
+            this.dialogForm.reportValidity();
+        } else {
             const title = this.bookTitleInput.value;
             const author = this.bookAuthorInput.value;
             const pages = this.bookPagesInput.value;
